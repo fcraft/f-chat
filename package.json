@@ -10,7 +10,7 @@
     "gen:swagger-typescript-api": "ts-node scripts/gen-swagger-typescript-api.ts",
     "gen:biz-error-code": "ts-node scripts/biz_error_code/generator.ts",
     "build": "ts-node scripts/build.ts",
-    "build:client": "cd client && pnpm run build",
+    "build:client": "cd client && pnpm run build-only",
     "build:server": "cd server && go build",
     "start": "node dist/server/main.js"
   },

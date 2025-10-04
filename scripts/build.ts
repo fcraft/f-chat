@@ -33,18 +33,19 @@ const colorConsole = {
 // Build client and server using concurrently
 colorConsole.info('Start Building...');
 const platform = os.platform();
+const basePath = path.resolve(__dirname, '../');
 let buildCommands: string[];
 
 if (platform === 'win32') {
   buildCommands = [
-    'cd ../server',
+    'cd ./server',
     'set GOOS=linux GOARCH=amd64 && go build -o dist\\FChat_linux_amd64',
     'set GOOS=darwin GOARCH=amd64 && go build -o dist\\FChat_darwin_amd64',
     'set GOOS=windows GOARCH=amd64 && go build -o dist\\FChat_windows_amd64.exe'
   ];
 } else {
   buildCommands = [
-    'cd ../server',
+    'cd ./server',
     'GOOS=linux GOARCH=amd64 go build -o dist/FChat_linux_amd64',
     'GOOS=darwin GOARCH=amd64 go build -o dist/FChat_darwin_amd64',
     'GOOS=windows GOARCH=amd64 go build -o dist/FChat_windows_amd64.exe'
@@ -63,7 +64,7 @@ const {result} = concurrently(
     prefix: 'build-{name}',
     killOthers: ['failure'],
     restartTries: 1,
-    cwd: path.resolve(__dirname, './'),
+    cwd: basePath,
   }
 );
 
@@ -75,14 +76,18 @@ result
     try {
       // Copy file to ./dist
       colorConsole.info('Start Copying Dist Files...');
+
+      const distPath = path.resolve(basePath, './dist');
+      !fs.existsSync(distPath) && fs.mkdirSync(distPath);
+
       fs.cpSync(
-        path.resolve(__dirname, './client/dist'),
-        path.resolve(__dirname, './dist/client'),
+        path.resolve(basePath, './client/dist'),
+        path.resolve(distPath, './client'),
         {recursive: true}
       );
       fs.cpSync(
-        path.resolve(__dirname, './server/dist'),
-        path.resolve(__dirname, './dist/server'),
+        path.resolve(basePath, './server/dist'),
+        path.resolve(distPath, './server'),
         {recursive: true}
       );
 
